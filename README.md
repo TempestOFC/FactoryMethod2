@@ -1,170 +1,216 @@
-PADRÃO FACTORY METHOD E SOLID - TSI 5 Periodo IFGOIANO
-🎯 OBJETIVO DA AULA
-Implementar um sistema flexível de notificações utilizando o Padrão Factory Method, demonstrando na prática os princípios do SOLID, especialmente o Open/Closed Principle (OCP).
+# Padrao Factory Method e SOLID - TSI 5o Periodo IF Goiano
 
-📌 1. PROBLEMA APRESENTADO
-Empresa precisa enviar notificações por múltiplos canais:
+## Objetivo da Aula
+Implementar um sistema flexivel de notificacoes utilizando o padrao Factory Method, demonstrando na pratica os principios do SOLID, especialmente o Open/Closed Principle (OCP).
 
-E-mail
+## 1. Problema Apresentado
+A empresa precisa enviar notificacoes por multiplos canais:
 
-SMS
+- E-mail
+- SMS
+- Push Notification
 
-Push Notification
+Requisitos principais:
 
-Necessidade de flexibilidade para adicionar novos canais
+- Flexibilidade para adicionar novos canais
+- Evitar modificacoes no codigo existente ao adicionar novos canais
 
-Evitar modificações no código existente ao adicionar novos canais
+## 2. Solucao Proposta
+Implementacao do padrao Factory Method com a seguinte estrutura:
 
-📌 2. SOLUÇÃO PROPOSTA
-Implementação do Padrão Factory Method com estrutura:
+### 2.1 Produto Abstrato (`Notification`)
+Interface que define o contrato para todas as notificacoes.
 
-2.1 Produto Abstrato (Notification)
-Interface que define o contrato para todas as notificações
+Metodos:
 
-Métodos: send(message) e getType()
+- `send(message)`
+- `getType()`
 
-2.2 Produtos Concretos
-EmailNotification
+### 2.2 Produtos Concretos
 
-SMSNotification
+- `EmailNotification`
+- `SMSNotification`
+- `PushNotification`
+- `WhatsAppNotification` (adicionado posteriormente)
 
-PushNotification
+### 2.3 Criador Abstrato (`NotificationFactory`)
+Classe abstrata com o Factory Method `createNotification()`.
 
-WhatsAppNotification (adicionado posteriormente)
+Tambem possui o metodo concreto `sendNotification()`, que utiliza o factory method.
 
-2.3 Criador Abstrato (NotificationFactory)
-Classe abstrata com o Factory Method: createNotification()
+### 2.4 Criadores Concretos
 
-Método concreto: sendNotification() que utiliza o factory method
+- `EmailFactory`
+- `SMSFactory`
+- `PushFactory`
+- `WhatsAppFactory` (adicionado sem modificar as classes existentes)
 
-2.4 Criadores Concretos
-EmailFactory
+### 2.5 Cliente (`Main`)
 
-SMSFactory
+- Gerencia a interface com o usuario
+- Seleciona a fabrica adequada com base na escolha
+- Envia notificacoes
 
-PushFactory
+## 3. Principios SOLID Demonstrados
 
-WhatsAppFactory (adicionado sem modificar existentes)
+| Principio | Como foi aplicado |
+| --- | --- |
+| Single Responsibility | Cada classe tem uma unica responsabilidade: notificacoes apenas enviam mensagens, fabricas apenas criam objetos e `Main` apenas gerencia a interface. |
+| Open/Closed | Sistema aberto para extensao e fechado para modificacao. O canal WhatsApp foi adicionado sem alterar classes existentes. |
+| Liskov Substitution | Todas as fabricas concretas podem substituir a fabrica abstrata, assim como todas as notificacoes podem substituir a interface `Notification`. |
+| Interface Segregation | A interface `Notification` e especifica e coesa, com apenas os metodos necessarios: `send()` e `getType()`. |
+| Dependency Inversion | `Main` depende da abstracao `NotificationFactory`, e nao das fabricas concretas. |
 
-2.5 Cliente (Main)
-Gerencia interface com usuário
+## 4. Demonstracao do Open/Closed Principle
 
-Seleciona a fábrica adequada baseado na escolha
+O que nao foi modificado (fechado para alteracao):
 
-Envia notificações
+- `Notification.java`
+- `EmailNotification.java`
+- `SMSNotification.java`
+- `PushNotification.java`
+- `NotificationFactory.java`
+- `EmailFactory.java`
+- `SMSFactory.java`
+- `PushFactory.java`
 
-📌 3. PRINCÍPIOS SOLID DEMONSTRADOS
-Princípio	Como foi aplicado
-Single Responsibility	Cada classe tem uma única responsabilidade:
-- Notificações: apenas enviam mensagens
-- Fábricas: apenas criam objetos
-- Main: apenas gerencia interface
-Open/Closed	✅ Sistema aberto para extensão
-✅ Fechado para modificação
-➜ WhatsApp adicionado sem alterar classes existentes
-Liskov Substitution	Todas as fábricas concretas podem substituir a fábrica abstrata
-Todas as notificações podem substituir a interface Notification
-Interface Segregation	Interface Notification é específica e coesa
-Apenas métodos necessários: send() e getType()
-Dependency Inversion	Main depende da abstração NotificationFactory
-Não depende das fábricas concretas
-📌 4. DEMONSTRAÇÃO DO OPEN/CLOSED PRINCIPLE
-O que NÃO foi modificado (Fechado):
-✅ Notification.java
+O que foi adicionado (aberto para extensao):
 
-✅ EmailNotification.java
+- `WhatsAppNotification.java`
+- `WhatsAppFactory.java`
 
-✅ SMSNotification.java
+Unica modificacao necessaria:
 
-✅ PushNotification.java
+- `Main.java` (apenas para incluir a opcao 4 no menu da interface)
 
-✅ NotificationFactory.java
+## 5. Beneficios do Padrao Factory Method
 
-✅ EmailFactory.java
+| Beneficio | Explicacao |
+| --- | --- |
+| Desacoplamento | O cliente nao conhece as classes concretas de notificacao. |
+| Extensibilidade | Novos canais podem ser adicionados sem impacto no codigo existente. |
+| Manutenibilidade | Codigo organizado por responsabilidades. |
+| Testabilidade | Facil criar mocks e testes unitarios. |
+| Reusabilidade | Fabricas podem ser reutilizadas em diferentes contextos. |
 
-✅ SMSFactory.java
+## 6. Estrutura Final do Projeto
 
-✅ PushFactory.java
-
-O que foi ADICIONADO (Aberto):
-➕ WhatsAppNotification.java
-
-➕ WhatsAppFactory.java
-
-Única modificação necessária:
-⚠️ Main.java - apenas para incluir a opção 4 no menu (interface com usuário)
-
-📌 5. BENEFÍCIOS DO PADRÃO FACTORY METHOD
-Benefício	Explicação
-Desacoplamento	Cliente não conhece as classes concretas de notificação
-Extensibilidade	Novos canais adicionados sem impacto no código existente
-Manutenibilidade	Código organizado por responsabilidades
-Testabilidade	Fácil criar mocks e testes unitários
-Reusabilidade	Fábricas podem ser reutilizadas em diferentes contextos
-📌 6. ESTRUTURA FINAL DO PROJETO
-text
+```text
 notificacoes/
-├── Notification.java          (interface - NÃO MODIFICADA)
-├── EmailNotification.java     (NÃO MODIFICADO)
-├── SMSNotification.java       (NÃO MODIFICADO)
-├── PushNotification.java      (NÃO MODIFICADO)
+├── Notification.java          (interface - NAO MODIFICADA)
+├── EmailNotification.java     (NAO MODIFICADO)
+├── SMSNotification.java       (NAO MODIFICADO)
+├── PushNotification.java      (NAO MODIFICADO)
 ├── WhatsAppNotification.java  (NOVO - ADICIONADO)
-├── NotificationFactory.java   (abstrata - NÃO MODIFICADA)
-├── EmailFactory.java          (NÃO MODIFICADO)
-├── SMSFactory.java            (NÃO MODIFICADO)
-├── PushFactory.java           (NÃO MODIFICADO)
+├── NotificationFactory.java   (abstrata - NAO MODIFICADA)
+├── EmailFactory.java          (NAO MODIFICADO)
+├── SMSFactory.java            (NAO MODIFICADO)
+├── PushFactory.java           (NAO MODIFICADO)
 ├── WhatsAppFactory.java       (NOVO - ADICIONADO)
 └── Main.java                  (MODIFICADO - apenas menu)
-📌 7. APRENDIZADOS PRÁTICOS
-Factory Method → Delega a criação de objetos para subclasses
+```
 
-OCP → Como estender sistemas sem modificar código existente
+## 7. Aprendizados Praticos
 
-Baixo Acoplamento → Depender de abstrações, não de implementações
+- Factory Method: delega a criacao de objetos para subclasses.
+- OCP: permite estender sistemas sem modificar codigo existente.
+- Baixo acoplamento: depender de abstracoes, nao de implementacoes.
+- Coesao: cada classe possui uma responsabilidade unica.
+- Arquitetura flexivel: sistemas preparados para mudancas futuras.
 
-Coesão → Cada classe tem uma responsabilidade única
+## 8. UML - Visao Geral da Arquitetura
 
-Arquitetura Flexível → Sistemas preparados para mudanças futuras
+```mermaid
+classDiagram
+        direction TB
 
-📌 8. UML - VISÃO GERAL DA ARQUITETURA
-text
-┌─────────────────────────────────────────────────────────┐
-│                    <<interface>>                        │
-│                    Notification                         │
-│              + send() + getType()                       │
-└─────────────────────────┬───────────────────────────────┘
-                          △
-        ┌─────────────────┼─────────────────┬─────────────┐
-        │                 │                 │             │
-┌───────┴───────┐ ┌───────┴───────┐ ┌───────┴───────┐ ┌───┴──────────┐
-│ EmailNotif    │ │ SMSNotif      │ │ PushNotif     │ │ WhatsAppNotif│
-└───────────────┘ └───────────────┘ └───────────────┘ └──────────────┘
-        △                 △                 △                 △
-        │                 │                 │                 │
-        └─────────────────┼─────────────────┼─────────────────┘
-                          │
-              ┌───────────┴───────────┐
-              │   <<abstract>>        │
-              │ NotificationFactory   │
-              │ + createNotification()│
-              │ + sendNotification()  │
-              └───────────┬───────────┘
-        ┌─────────────────┼─────────────────┬─────────────┐
-        │                 │                 │             │
-┌───────┴───────┐ ┌───────┴───────┐ ┌───────┴───────┐ ┌───┴──────────┐
-│ EmailFactory  │ │ SMSFactory    │ │ PushFactory   │ │ WhatsAppFact-│
-│               │ │               │ │               │ │ ory          │
-└───────────────┘ └───────────────┘ └───────────────┘ └──────────────┘
-📌 9. CONCLUSÕES FINAIS
-✅ Factory Method é ideal para sistemas que precisam ser extensíveis
+        class Main {
+                -Scanner scanner
+                +main(String[] args) void
+        }
 
-✅ OCP permite adicionar novas funcionalidades sem risco de quebrar código existente
+        class Notification {
+                <<interface>>
+                +send(String message) void
+                +getType() String
+        }
 
-✅ O padrão promove baixo acoplamento e alta coesão
+        class NotificationFactory {
+                <<abstract>>
+                +createNotification() Notification
+                +sendNotification(String message) void
+        }
 
-✅ Código se torna mais limpo, testável e manutenível
+        class EmailFactory {
+                +createNotification() Notification
+        }
 
-✅ A adição do WhatsApp demonstrou na prática como o sistema pode evoluir sem modificações nas classes já existentes
+        class SMSFactory {
+                +createNotification() Notification
+        }
 
-Obs:
-No GlitHub ja está presente tanto a primeira quanto a segunda versão desse código
+        class PushFactory {
+                +createNotification() Notification
+        }
+
+        class WhatsAppFactory {
+                +createNotification() Notification
+        }
+
+        class EmailNotification {
+                -String recipient
+                +EmailNotification()
+                +send(String message) void
+                +getType() String
+        }
+
+        class SMSNotification {
+                -String phoneNumber
+                +SMSNotification()
+                +send(String message) void
+                +getType() String
+        }
+
+        class PushNotification {
+                -String deviceId
+                +PushNotification()
+                +send(String message) void
+                +getType() String
+        }
+
+        class WhatsAppNotification {
+                -String phoneNumber
+                -String contactName
+                +WhatsAppNotification()
+                +send(String message) void
+                +getType() String
+        }
+
+        NotificationFactory <|-- EmailFactory
+        NotificationFactory <|-- SMSFactory
+        NotificationFactory <|-- PushFactory
+        NotificationFactory <|-- WhatsAppFactory
+
+        Notification <|.. EmailNotification
+        Notification <|.. SMSNotification
+        Notification <|.. PushNotification
+        Notification <|.. WhatsAppNotification
+
+        EmailFactory ..> EmailNotification : creates
+        SMSFactory ..> SMSNotification : creates
+        PushFactory ..> PushNotification : creates
+        WhatsAppFactory ..> WhatsAppNotification : creates
+
+        Main ..> NotificationFactory : depends on
+```
+
+## 9. Conclusoes Finais
+
+- Factory Method e ideal para sistemas que precisam ser extensiveis.
+- OCP permite adicionar novas funcionalidades sem risco de quebrar codigo existente.
+- O padrao promove baixo acoplamento e alta coesao.
+- O codigo se torna mais limpo, testavel e manutenivel.
+- A adicao do WhatsApp demonstrou, na pratica, como o sistema pode evoluir sem modificacoes nas classes ja existentes.
+
+## Observacao
+No GitHub ja estao presentes tanto a primeira quanto a segunda versao desse codigo.
